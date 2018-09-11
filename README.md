@@ -44,7 +44,7 @@ Creating a new message
 ```
 
 Fetch all messages
-![Get Messages](https://github.com/kredods/palindetect/raw/master/PalinDetect%20(GET%ALL).jpg)
+![Get Messages](https://github.com/kredods/palindetect/raw/master/PalinDetect%20(GET%20ALL).jpg)
 - URL: `/v1/messages`
 
 - Method: `GET`
