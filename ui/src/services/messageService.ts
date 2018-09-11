@@ -1,6 +1,5 @@
 import { IMessage } from '../models/message';
-
-const baseHost = "http://192.168.99.100:8000"
+const baseHost = "http://13.57.28.144:8000" || "http://localhost:8000"
 
 export class MessageService {
 public static createMessage(message: string){

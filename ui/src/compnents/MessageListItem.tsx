@@ -5,6 +5,7 @@ import { MessageService } from '../services/messageService';
 interface IProps{
     message: IMessage
     refreshMessages: any
+    key: any
 }
 
 interface IState{

@@ -13,6 +13,10 @@ import (
 	"github.com/kredods/palindetect/server/controllers"
 )
 
+var(
+	mSession *mgo.Session
+)
+
 func Routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/{id}", getMessage)
@@ -27,8 +31,7 @@ func getMessage(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	dbId := bson.ObjectIdHex(id)
 	
-	messageCollection, session, err := getMessageCollection()
-	defer session.Close()
+	messageCollection, err := getMessageCollection()
 	if err != nil {
 		http.Error(w, "Unable to Connect to Database", 500 )
 		return
@@ -56,8 +59,7 @@ func updateMessage(w http.ResponseWriter, r *http.Request){
 	id := chi.URLParam(r, "id")
 	dbId := bson.ObjectIdHex(id)
 	message.IsPalindrome = controllers.IsPalindrome(message.Body)
-	messageCollection, session, err := getMessageCollection()
-	defer session.Close()
+	messageCollection, err := getMessageCollection()
 	if err != nil {
 		http.Error(w, "Unable to Connect to Database", 500 )
 		return
@@ -78,8 +80,7 @@ func deleteMessage(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	dbId := bson.ObjectIdHex(id)
 	
-	messageCollection, session, err := getMessageCollection()
-	defer session.Close()
+	messageCollection, err := getMessageCollection()
 	if err != nil {
 		http.Error(w, "Unable to Connect to Database", 500 )
 		return
@@ -106,8 +107,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	newMessage.IsPalindrome = controllers.IsPalindrome(newMessage.Body)
-	messageCollection, session, err := getMessageCollection()
-	defer session.Close()
+	messageCollection, err := getMessageCollection()
 	if err != nil {
 		http.Error(w, "Unable to Connect to Database", 500 )
 		return
@@ -126,8 +126,7 @@ func createMessage(w http.ResponseWriter, r *http.Request) {
 
 func getAllMessages(w http.ResponseWriter, r *http.Request) {
 
-	messageCollection, session, err := getMessageCollection()
-	defer session.Close()
+	messageCollection, err := getMessageCollection()
 	if err != nil {
 		return
 	}
@@ -139,9 +138,11 @@ func getAllMessages(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, Messages) 
 }
 
-func getMessageCollection() (messageCollection *mgo.Collection, session *mgo.Session, err error) {
-	session, err = db.GetSession()
-	database := session.DB(db.GetDBName())
+func getMessageCollection() (messageCollection *mgo.Collection, err error) {
+	if mSession == nil{
+		mSession, err = db.GetSession()
+	}
+	database := mSession.DB(db.GetDBName())
 	if err != nil {
 		return
 	}

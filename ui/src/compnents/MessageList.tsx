@@ -14,7 +14,9 @@ interface IState{
 export class MessageList extends React.Component<IProps,IState>{
     constructor(props: any){
         super(props)
-        this.state = this.props
+        this.state = {
+            messages: this.props.messages
+        }
     }
 
     public render(){
@@ -23,7 +25,7 @@ export class MessageList extends React.Component<IProps,IState>{
             {
                 this.props.messages.length !==0 ?
                 this.props.messages.map( message =>(
-                    <MessageListItem refreshMessages={this.props.refreshMessages}  message={message}/>
+                    <MessageListItem key={message.id} refreshMessages={this.props.refreshMessages}  message={message}/>
                 ))
                 : (
                     <p>No Messages Created</p>
